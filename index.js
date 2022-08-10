@@ -54,6 +54,7 @@ app.post("/audio_info", upload.single("file"), async (req, res) => {
 });
 
 app.post("/spotify-auth", async (req, res) => {
+  console.log("request.body", req.body);
   const payload = {
     grant_type: "authorization_code",
     code: req.body.code,
