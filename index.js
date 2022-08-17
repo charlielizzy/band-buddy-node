@@ -7,10 +7,11 @@ import dotenv from "dotenv";
 import axios from "axios";
 import multer from "multer";
 import qs from "qs";
+import { createSecretKey } from "crypto";
 
 dotenv.config();
 const app = express();
-// console.log(process.env.PORT);
+console.log(process.env.PORT);
 const port = process.env.PORT || 3001;
 
 app.use(cors());
@@ -22,18 +23,15 @@ app.get("/", (req, res) => {
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
-    // console.log("filename");
     cb(null, file.originalname);
   },
   destination: function (req, file, cb) {
-    // console.log("storage");
     cb(null, "./uploads");
   },
 });
 
 const upload = multer({ storage });
 app.post("/audio_info", upload.single("file"), async (req, res) => {
-  // console.log("req.file", req.file);
   const payload = {
     api_token: process.env.AUDDIO_API_TOKEN,
     file: fs.createReadStream(req.file.path),
@@ -54,7 +52,6 @@ app.post("/audio_info", upload.single("file"), async (req, res) => {
 });
 
 app.post("/spotify-auth", async (req, res) => {
-  // console.log("request.body", req.body);
   const payload = {
     grant_type: "authorization_code",
     code: req.body.code,
@@ -73,50 +70,9 @@ app.post("/spotify-auth", async (req, res) => {
     res.send(result.data);
     console.log("result.data", result.data);
   } catch (error) {
-    console.log(error);
+    res.send(500)
   }
 });
-
-
-
-app.get(`/artist/:id/top-tracks`, async (req, res) => {
-  const id = req.params.id;
- try {
-  
-  const result = await axios({
-    method: "get",
-    url: `https://api.spotify.com/v1/artists/${id}/top-tracks?market=GB`,
-    headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_BEARER_TOKEN}`,
-      'Content-Type': 'application/json'
-    }
-
-  })
-  console.log(result.data.tracks[1], 'result')
-  res.send(result.data);
- } catch (error) {
-  console.log(error)
- }
-})
-
-app.get(`/artist/:id/related-artists`, async (req, res) => {
-  const id = req.params.id;
- try {
-  
-  const result = await axios({
-    method: "get",
-    url: `https://api.spotify.com/v1/artists/${id}/related-artists`,
-    headers: {
-      Authorization: `Bearer ${process.env.SPOTIFY_BEARER_TOKEN}`,
-      'Content-Type': 'application/json'
-    }
-
-  })
-  res.send(result.data);
- } catch (error) {
-  console.log(error)
- }
-})
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
