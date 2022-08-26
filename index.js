@@ -1,13 +1,11 @@
 import express from "express";
 import cors from "cors";
-// import fetch from "node-fetch";
-// import FormData from "form-data";
 import fs from "fs";
 import dotenv from "dotenv";
 import axios from "axios";
 import multer from "multer";
 import qs from "qs";
-import { createSecretKey } from "crypto";
+import db from "./DB/index.js";
 
 dotenv.config();
 const app = express();
@@ -20,6 +18,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.get("/user/:id", db.getUser);
+// app.get("/events/:id", db.getEvents);
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {
@@ -70,7 +71,7 @@ app.post("/spotify-auth", async (req, res) => {
     res.send(result.data);
     console.log("result.data", result.data);
   } catch (error) {
-    res.send(500)
+    res.send(500);
   }
 });
 
