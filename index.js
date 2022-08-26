@@ -5,7 +5,9 @@ import dotenv from "dotenv";
 import axios from "axios";
 import multer from "multer";
 import qs from "qs";
-import { getUser } from "./DB/index.js";
+dotenv.config();
+import { getUser, getEvents } from "./DB/index.js";
+import bodyParser from "body-parser";
 
 dotenv.config();
 const app = express();
@@ -14,12 +16,19 @@ const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.get("/user/:id", getUser);
+app.get("/events/:id", getEvents);
 
 const storage = multer.diskStorage({
   filename: function (req, file, cb) {

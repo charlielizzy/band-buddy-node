@@ -1,7 +1,8 @@
-import pkg from 'pg'
+import pkg from "pg";
 const connectionString = process.env.DATABASE_URL;
 
 const { Pool } = pkg;
+
 export const pool = new Pool({
   connectionString,
   ssl: {
@@ -10,8 +11,7 @@ export const pool = new Pool({
 });
 
 export const getUser = (request, response) => {
-  const spotify_id = request.params.spotify_id;
-  console.log("spotify_id", spotify_id);
+  const spotify_id = request.params.id;
   pool.query(
     "SELECT * FROM users WHERE spotify_id = $1",
     [spotify_id],
@@ -25,8 +25,7 @@ export const getUser = (request, response) => {
 };
 
 export const getEvents = (request, response) => {
-  const spotify_id = request.params.spotify_id;
-  console.log("spotify_id", spotify_id);
+  const spotify_id = request.params.id;
   pool.query(
     "SELECT * FROM events WHERE spotify_id = $1",
     [spotify_id],
