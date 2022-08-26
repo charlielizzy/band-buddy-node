@@ -1,14 +1,15 @@
-const Pool = require("pg").Pool;
+import pkg from 'pg'
 const connectionString = process.env.DATABASE_URL;
 
-const pool = new Pool({
+const { Pool } = pkg;
+export const pool = new Pool({
   connectionString,
   ssl: {
     rejectUnauthorized: false,
   },
 });
 
-const getUser = (request, response) => {
+export const getUser = (request, response) => {
   const spotify_id = request.params.spotify_id;
   console.log("spotify_id", spotify_id);
   pool.query(
@@ -23,7 +24,7 @@ const getUser = (request, response) => {
   );
 };
 
-const getEvents = (request, response) => {
+export const getEvents = (request, response) => {
   const spotify_id = request.params.spotify_id;
   console.log("spotify_id", spotify_id);
   pool.query(
@@ -36,10 +37,4 @@ const getEvents = (request, response) => {
       response.status(200).json(results.rows);
     }
   );
-};
-
-module.exports = {
-  pool,
-  getUser,
-  getEvents,
 };
