@@ -71,9 +71,10 @@ export const addEvent = (request, response) => {
   const city = request.body.city;
   const url = request.body.url;
   const spotify_id = request.params.id;
+  const event_id = request.body.event_id;
   pool.query(
-    "INSERT INTO events (event_name, date, city, url, spotify_id) VALUES ($1, $2, $3, $4, $5)",
-    [event_name, date, city, url, spotify_id],
+    "INSERT INTO events (event_name, date, city, url, spotify_id, event_id) VALUES ($1, $2, $3, $4, $5, $6)",
+    [event_name, date, city, url, spotify_id, event_id],
     (error, results) => {
       if (error) {
         throw error;
@@ -84,12 +85,15 @@ export const addEvent = (request, response) => {
 };
 
 export const removeEvent = (request, response) => {
-  const id = request.body.id;
-
-  pool.query("DELETE FROM events WHERE id = $1", [id], (error, results) => {
-    if (error) {
-      throw error;
+  const eventID = request.body.event_id;
+  pool.query(
+    "DELETE FROM events WHERE event_id = $1",
+    [eventID],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
     }
-    response.status(200).json(results.rows);
-  });
+  );
 };
